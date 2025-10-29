@@ -1,0 +1,17 @@
+# Carpetas de dependencias
+node_modules/
+
+# Variables de entorno
+.env
+.env.local
+
+# Archivos de compilacion
+dist/
+build/
+
+# Todos los archivos de registro (.log)
+*.log
+
+# Todos los archivos de respaldo
+*.bak
+
