@@ -1,23 +1,20 @@
 const express = require('express');
-/* const sql = require('mssql'); */ const sql = require('mssql'); //Acceso a base de datos local
+const sql = require('mssql');
 const cors = require('cors');
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '2gb' })); // Aumentar el límite para manejar imágenes grandes
-app.use(express.urlencoded({ limit: '2gb', extended: true }));
+app.use(express.json());
 
 // ⚙️ Configura los datos reales de tu servidor SQL aquí
 const dbConfig = {
-    user: 'sa',  //Acceso con autenticación de windows
-    password: 'clark929', 
-    server: 'localhost',
+    user: 'AdminOEE',
+    password: 'AdminOEE',
+    server: 'PDNPD014', // puede ser IP o nombre del host
     database: 'KPIDB',
-    // driver: 'msnodesqlv8',
     options: {
-      encrypt: true,                // Se usa true si tienes TLS
-      trustServerCertificate: true 
-      // trustedConnection: true
+        encrypt: true,               // usa true si tienes TLS
+        trustServerCertificate: true // útil para entornos de pruebas
     }
 };
 
@@ -138,14 +135,27 @@ app.get('/api/consultaIndicadorClave-scrapHTML', async (req, res) => {
 //Ruta para consulta de procesos en scrap.html
 app.get('/api/consultaScrapProceso-scrapHTML', async (req, res) => {
     try {
+        //Obtenemos la fecha del parametro de la URL
+        const { fechaActual } = req.query;
+
+        //Obtenemos el pool de conexiones
         const pool = req.app.locals.db;
-        const result = await pool.request().query('SELECT ID, Fecha, nombreProceso, amountProceso FROM scrapProcesos');
-        res.json(result.recordset);
+
+        //Generamos el request para el indicador clave
+        const requestProcesos = pool.request(); //Se crea una nueva solicitud o peticion
+
+        // Consulta para procesos
+        const sqlProcesos = `SELECT ID, Fecha, nombreProceso, amountProceso FROM scrapProcesos WHERE CAST(Fecha AS DATE) = @fechaActual`;
+        requestProcesos.input('fechaActual', sql.Date, fechaActual);  //Vinculamos el parametro que estamos utilizando
+        const resultProcesos = await requestProcesos.query(sqlProcesos);
+
+        res.json(resultProcesos.recordset); //Mandamos la consulta al JSON
     } catch (err) {
         console.error('Error al obtener scrapProcesos: ', err);
         res.status(500).send('Error al consultar la tabla scrapProcesos');
     }
-});
+    }
+);
 
 //Ruta para insercion de indicadores scrap en scrap.html
 app.post('/api/insertScrapIndicator', async (req, res) => {

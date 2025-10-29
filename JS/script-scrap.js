@@ -127,6 +127,7 @@ function inicializarScrap() {
 // ======================= LÓGICA DE DATOS Y MODALES =======================
 
 async function fetchRegistros() {
+    document.getElementById('buttonIndicador').disabled = false;
     try {
         const fecha = document.getElementById("fecha-principal").value;
         const res = await fetch(`http://localhost:3000/api/consultaIndicadorClave-scrapHTML?fechaActual=${fecha}`);
@@ -134,6 +135,10 @@ async function fetchRegistros() {
         const data = await res.json();
         const tbody = document.querySelector('#scrapIndicatorTable tbody');
         tbody.innerHTML = '';
+        if(data.length > 0){
+            console.log('✅ El indicador clave ya está cargado para el día seleccionado.');
+            document.getElementById('buttonIndicador').disabled = true;
+        }
         data.forEach(reg => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -151,7 +156,8 @@ async function fetchRegistros() {
         });
     } catch (err) { console.error('❌ Error al cargar registros de costos:', err); }
     try {
-        const res = await fetch('http://localhost:3000/api/consultaScrapProceso-scrapHTML');
+        fecha = document.getElementById("fecha-principal").value;
+        const res = await fetch(`http://localhost:3000/api/consultaScrapProceso-scrapHTML?fechaActual=${fecha}`);
         if (!res.ok) throw new Error('Error al obtener registros');
         const data = await res.json();
         const tbody = document.querySelector('#scrapTable tbody');
