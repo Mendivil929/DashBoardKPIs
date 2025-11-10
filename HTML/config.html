@@ -3,15 +3,15 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Eficiencia Energética</title>
+    <title>Configuración - Admin</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <!-- <link rel='stylesheet' type='text/css' media='screen' href='/CSS/style-scrap.css'> -->
+    
     <link rel='stylesheet' type='text/css' media='screen' href='/CSS/style-index.css'>
-    <link rel='stylesheet' type='text/css' media='screen' href='/CSS/style-energy.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/CSS/style-config.css'> 
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-    <nav class="sidebar close">
+    <nav class="sidebar close"> 
         <header>
             <div class="image-text">
                 <span class="image">
@@ -27,13 +27,13 @@
             <div class="menu">
                 <ul class="menu-links">
                     <li class="nav-link">
-                        <a href="index.html">
+                        <a href="index.html" target="">
                             <i class='bx bx-home-alt icon' title="Dashboard"></i>
                             <span class="text nav-text">Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="scrap.html">
+                        <a href="scrap.html" id="btn-scrap">
                             <i class='bx bx-trash icon' title="Scrap"></i>
                             <span class="text nav-text">Scrap</span>
                         </a>
@@ -52,8 +52,8 @@
                     </li>
                     <li class="nav-link">
                         <a href="energy.html">
-                            <i class='bx bxs-bolt icon' title="Energy Efficiency"></i>
-                            <span class="text nav-text">Energy Efficiency</span>
+                            <i class='bx bxs-bolt icon' title="Energy Effiency"></i>
+                            <span class="text nav-text">Energy Effiency</span>
                         </a>
                     </li>
                     <li class="nav-link">
@@ -68,7 +68,7 @@
                             <span class="text nav-text">MP&L</span>
                         </a>
                     </li>
-                    </ul>
+                </ul>
             </div>
             <div class="bottom-content">
                 <li class="">
@@ -90,7 +90,6 @@
                     </div>
                 </li>
             </div>
-        </div>
     </nav>
 
     <nav class="topbar">
@@ -108,17 +107,15 @@
                 <hr>
                 <div class="menu-options">
                     <div>
-                        <a href="">
-                            <!-- <img src="images/user-id-card.svg" alt=""> -->
+                        <a href="perfil.html">
                              <i class='bx bx-user' ></i>
                             <p>Ver perfil</p>
                             <span>></span>
                         </a>
                     </div>
                     <div>
-                        <a href="config.html">
-                            <!-- <img src="images/settings-icon.png" alt=""> -->
-                             <i class='bx  bx-cog'  ></i> 
+                        <a href="config.html"> 
+                            <i class='bx  bx-cog'  ></i> 
                             <p>Configuraciones</p>
                             <span>></span>
                         </a>
@@ -129,78 +126,63 @@
     </nav>
 
     <section class="home">
-        <div class="contenedorRegistroEnergia">
+        <h1 class="admin-title">Administrador de Códigos de Defecto</h1>
+
+        <div class="contenedorDefectoAdmin">
+            
             <div class="form-insert insertion">
-                <h3>Insertar Consumo de Energía</h3>
-                <form id="energyForm">
-                    <label for="fecha">Fecha:</label>
-                    <input type="datetime-local" id="fecha" name="fecha" class="control" required />
+                <h3 id="formDefectoTitle">Añadir Nuevo Defecto</h3>
+                <form id="formDefectoAdmin">
+                    <input type="hidden" id="defecto-id-hidden"> <label for="defecto-code">Scrap Code:</label>
+                    <input type="text" id="defecto-code" class="control" required />
 
-                    <label for="electricidad_consumo">Consumo Electricidad (kWh):</label>
-                    <input type="number" step="0.001" id="electricidad_consumo" class="control" required />
+                    <label for="defecto-name">Scrap Name:</label>
+                    <input type="text" id="defecto-name" class="control" required />
 
-                    <label for="electricidad_produccion">Producción (con Electricidad):</label>
-                    <input type="number" id="electricidad_produccion" class="control" required />
-
-                    <label for="helio_consumo">Consumo Helio (m³):</label>
-                    <input type="number" step="0.001" id="helio_consumo" class="control" required />
-
-                    <label for="helio_produccion">Producción (con Helio):</label>
-                    <input type="number" id="helio_produccion" class="control" required />
-
-                    <button type="submit">Guardar</button>
+                    <button type="submit" id="btnGuardarDefecto">Guardar</button>
+                    <button type="button" id="btnCancelarEdicion" class="button-cancel" style="display:none;">Cancelar</button>
                 </form>
             </div>
-
+            
             <div class="form-insert register">
-                <h3>Consumos Registrados</h3>
-                <table id="energyTable">
+                <h3>Defectos Existentes</h3>
+                <table id="tablaDefectosAdmin">
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Fecha</th>
-                        <th>Electricidad (kWh)</th>
-                        <th>Helio (m³)</th>
-                        <th>kWh / Unidad</th>
-                        <th>m³ / Unidad</th>
+                        <th>Scrap Code</th>
+                        <th>Scrap Name</th>
                         <th>Acciones</th>
                     </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        </tbody>
                 </table>
             </div>
         </div>
     </section>
 
-    <!-- Modal para editar registros de energía -->
-    <div id="editEnergyModal" class="modal-overlay" style="display: none; /* Estilo en línea para JS */">
+    <!-- ============================= VENTANAS MODALES ============================= -->
+     <div id="editDefectoModal" class="modal-overlay">
         <div class="modal-content">
-            <span id="closeEnergyModalBtn" class="close-btn">&times;</span>
-            <h3>Modificar Registro de Energía</h3>
-            <form id="editEnergyForm">
-                <input type="hidden" id="edit-energy-id">
-                
-                <label for="edit-fecha">Fecha y Hora:</label>
-                <input type="datetime-local" id="edit-fecha" class="control" required />
+            <span id="closeDefectoModalBtn" class="close-btn">&times;</span>
+            <h3>Modificar Código de Defecto</h3>
+            <form id="editDefectoForm">
+                <input type="hidden" id="edit-defecto-id-hidden">
 
-                <label for="edit-electricidad_consumo">Consumo Electricidad (kWh):</label>
-                <input type="number" step="0.001" id="edit-electricidad_consumo" class="control" required />
+                <label for="edit-defecto-code">Scrap Code:</label>
+                <input type="text" id="edit-defecto-code" class="control" required />
 
-                <label for="edit-electricidad_produccion">Producción (con Electricidad):</label>
-                <input type="number" id="edit-electricidad_produccion" class="control" required />
+                <label for="edit-defecto-name">Scrap Name:</label>
+                <input type="text" id="edit-defecto-name" class="control" required />
 
-                <label for="edit-helio_consumo">Consumo Helio (m³):</label>
-                <input type="number" step="0.001" id="edit-helio_consumo" class="control" required />
-
-                <label for="edit-helio_produccion">Producción (con Helio):</label>
-                <input type="number" id="edit-helio_produccion" class="control" required />
-
-                <button type="submit">Actualizar Registro</button>
+                <button type="submit">Actualizar Defecto</button>
             </form>
         </div>
     </div>
 
-    <script src="/JS/script-energy.js"></script>
+    <!-- ===== SCRIPTS ===== -->
+    <script src="/JS/script-config.js"></script>
     <script src="/JS/script-bar.js"></script> 
 </body>
 </html>

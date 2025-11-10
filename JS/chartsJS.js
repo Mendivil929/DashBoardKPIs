@@ -6,15 +6,16 @@ function formatearFecha(fecha) {
     // getMonth() es base 0 (Enero=0), por eso se suma 1.
     // .padStart(2, '0') asegura que siempre tenga dos dígitos (ej: 09).
     const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-    
     const dia = fecha.getDate().toString().padStart(2, '0');
-    
     return `${anio}-${mes}-${dia}`;
 }
 
 //Declaramos los prototipos de los charts para controlar su creación y eliminación
 let chartCostoScrap = null;
 let chartCostoScrapHistorial = null;
+let chartScrapProcesos = null;
+let chartTopScrapDefecto = null;
+let chartEnergy = null;
 
 // ------------ CHARTS DE COSTO DE SCRAP PRIMER DIV ------------
 
@@ -23,13 +24,14 @@ export function generarGraficosScrap(fechaInicio, fechaActual, opcionSeleccionad
     let fechaInicioFormato = formatearFecha(fechaInicio);
     let fechaActualFormato = formatearFecha(fechaActual);
 
-    let fechaInicioIndicador = fechaInicioFormato; //Variable auxiliar para indicador clave
+    let fechaInicioDiario = fechaInicioFormato; //Variable auxiliar para indicador clave
     if(opcionSeleccionada == "DIARIO"){
-        fechaInicioIndicador = fechaActualFormato;
+        fechaInicioDiario = fechaActualFormato;
     }
     // alert(`Opcion seleccionada: ${opcionSeleccionada} por lo tanto: ${fechaInicioFormato} y ${fechaActualFormato}`);
+
     // ---------- CHART INDICADOR CLAVE ----------
-    fetch(`http://localhost:3000/api/consultaIndicadorClave?fechaInicio=${fechaInicioIndicador}&fechaActual=${fechaActualFormato}`)
+    fetch(`http://localhost:3000/api/consultaIndicadorClave?fechaInicio=${fechaInicioDiario}&fechaActual=${fechaActualFormato}`)
     .then(res => res.json())
     .then(data => {
         if(!data || data.length == 0){
@@ -41,97 +43,100 @@ export function generarGraficosScrap(fechaInicio, fechaActual, opcionSeleccionad
         //Extrayendo datos en forma de arreglo de la tabla materialCosts
         const porcentaje = data.map(item => item.porcentajeReal);
         const porcentajeRedondeado = Math.round(porcentaje * 100) / 100;
+
+        // Destruimos el gráfico anterior si existe
         if(chartCostoScrap)
             chartCostoScrap.destroy()
+
         const ctx = document.getElementById('chartCostoScrap').getContext('2d');
         chartCostoScrap = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Scrap%'],
-            datasets: [
-            {
-                label: 'Scrap% of Material Cost',
-                data: [10],
-                actualValue: [porcentajeRedondeado],
-                backgroundColor: 'rgba(255, 0, 0, 0.6)',
-                borderRadius: 10,
-                barThickness: 20,
-                maxBarThickness: 30
-            }
-            ]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-            x: {
-                min: 0,
-                max: 12, // límite eje x
-                grid: { display: false, drawBorder: false },
-                ticks: { display: false }
+            type: 'bar',
+            data: {
+                labels: ['Scrap%'],
+                datasets: [
+                {
+                    label: 'Scrap% of Material Cost',
+                    data: [10],
+                    actualValue: [porcentajeRedondeado],
+                    backgroundColor: 'rgba(255, 0, 0, 0.6)',
+                    borderRadius: 10,
+                    barThickness: 20,
+                    maxBarThickness: 30
+                }
+                ]
             },
-            y: {
-                grid: { display: false, drawBorder: false },
-                ticks: { display: false }
-            }
-            },
-            plugins: {
-            legend: {
-                labels: {
-                    usePointStyle: true, // usa punto en lugar de cuadro
-                    pointStyle: false,   // con false no dibuja nada
-                    boxWidth: 0,  //Ancho de caja de color, con esto quitamos la figura al lado del label en este caso PointStyle
-                    generateLabels: function(chart) {
-                        const labels = chart.data.datasets.map((dataset, i) => {
-                        return {
-                            text: dataset.label, // solo el texto
-                            fillStyle: "transparent", // quita color
-                            hidden: !chart.isDatasetVisible(i),
-                            datasetIndex: i
-                        };
-                        });
-                        return labels;
-                    },
-                    font: {
-                    weight: 'bold',
-                    size: 14
-                    }
-                    }
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                x: {
+                    min: 0,
+                    max: 12, // límite eje x
+                    grid: { display: false, drawBorder: false },
+                    ticks: { display: false }
                 },
-                tooltip: { enabled: false },
-                datalabels: {
-                    anchor: 'end',
-                    align: 'right',
-                    color: '#000',
-                    formatter: (value, context) => {
-                    //Obtenemos el valor real de nuestro indicador a traves de 'actualValue' para el label derecho
-                    const realValue = context.dataset.actualValue[context.datasetIndex];
-                    return realValue + '%';
+                y: {
+                    grid: { display: false, drawBorder: false },
+                    ticks: { display: false }
+                }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            usePointStyle: true, // usa punto en lugar de cuadro
+                            pointStyle: false,   // con false no dibuja nada
+                            boxWidth: 0,  //Ancho de caja de color, con esto quitamos la figura al lado del label en este caso PointStyle
+                            generateLabels: function(chart) {
+                                const labels = chart.data.datasets.map((dataset, i) => {
+                                    return {
+                                        text: dataset.label, // solo el texto
+                                        fillStyle: "transparent", // quita color
+                                        hidden: !chart.isDatasetVisible(i),
+                                        datasetIndex: i
+                                    };
+                                });
+                                    return labels;
+                            },
+                            font: {
+                                weight: 'bold',
+                                size: 14
+                            }
+                        }
+                    },
+                    tooltip: { enabled: false },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'right',
+                        // color: '#000',
+                        formatter: (value, context) => {
+                            //Obtenemos el valor real de nuestro indicador a traves de 'actualValue' para el label derecho
+                            const realValue = context.dataset.actualValue[context.datasetIndex];
+                            return realValue + '%';
+                        }
                     }
                 }
-            }
-        },
-        plugins: [
-            ChartDataLabels,
-            {
-            // Plugin para dibujar el punto negro como indicador
-            id: 'indicator',
-            afterDatasetsDraw(chart) {
-                const {ctx, scales: {x, y}} = chart;
-                const value = chart.data.datasets[0].actualValue;
-                const yPos = y.getPixelForValue(0);
-                const xPos = x.getPixelForValue(value);
-                
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(xPos, yPos, 6, 0, Math.PI * 2);
-                ctx.fillStyle = '#000';
-                ctx.fill();
-                ctx.restore();
-            }
-            }
-        ]
+            },
+            plugins: [
+                ChartDataLabels,
+                {
+                    // Plugin para dibujar el punto negro como indicador
+                    id: 'indicator',
+                    afterDatasetsDraw(chart) {
+                        const {ctx, scales: {x, y}} = chart;
+                        const value = chart.data.datasets[0].actualValue;
+                        const yPos = y.getPixelForValue(0);
+                        const xPos = x.getPixelForValue(value);
+                        
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(xPos, yPos, 6, 0, Math.PI * 2);
+                        ctx.fillStyle = '#000';
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }
+            ]
         });
     })
   .catch(err => {
@@ -139,7 +144,7 @@ export function generarGraficosScrap(fechaInicio, fechaActual, opcionSeleccionad
   });
 
   // ---------- CHART HISTORIAL DE SCRAP ----------
-  fetch(`http://localhost:3000/api/consultaHistorialScrap-scrapHTML?fechaInicio=${fechaInicioFormato}&fechaActual=${fechaActualFormato}`)
+  fetch(`http://localhost:3000/api/consultaHistorialScrap?fechaInicio=${fechaInicioFormato}&fechaActual=${fechaActualFormato}`)
   .then(res => res.json())
   .then(data => {
     if (!data || data.length === 0) {
@@ -181,27 +186,27 @@ export function generarGraficosScrap(fechaInicio, fechaActual, opcionSeleccionad
         responsive: true,
         maintainAspectRatio: true,
         plugins: {
-        legend: { display: false },
-        tooltip: { enabled: false }, //Habilitamos o deshabilitamos el tooltip para ver valores
-        datalabels: {
-            align: "top",
-            anchor: "end",
-            color: "black",
-            font: { weight: "bold" },
-            rotation: -90, //Rotamos labels para que esten verticalmente
-            formatter: (value) => value + "%"
-        },
-        annotation: {
-            annotations: {
-                baseline: {
-                    type: "line",
-                    yMin: 10,
-                    yMax: 10,
-                    borderColor: "black",
-                    borderWidth: 1
+            legend: { display: false },
+            tooltip: { enabled: false }, //Habilitamos o deshabilitamos el tooltip para ver valores
+            datalabels: {
+                align: "top",
+                anchor: "end",
+                // color: "black",
+                font: { weight: "bold" },
+                rotation: -90, //Rotamos labels para que esten verticalmente
+                formatter: (value) => value + "%"
+            },
+            annotation: {
+                annotations: {
+                    baseline: {
+                        type: "line",
+                        yMin: 10,
+                        yMax: 10,
+                        borderColor: "black",
+                        borderWidth: 1
+                        }
                     }
                 }
-            }
         },
         scales: {
         y: {
@@ -224,141 +229,215 @@ export function generarGraficosScrap(fechaInicio, fechaActual, opcionSeleccionad
     console.error("Error al obtener la tabla materialCosts para el historial de indicadores", err);
   });
     
-}
-
-
-// ------------ CHART DE DE SCRAP POR PROCESO SEGUNDO DIV ------------
-fetch('http://localhost:3000/api/consultaScrapProceso')
+  // ---------- CHART PROCESOS DE SCRAP SEGUNDO DIV ----------
+  fetch(`http://localhost:3000/api/consultaScrapProceso?fechaInicio=${fechaInicioDiario}&fechaActual=${fechaActualFormato}`)
     .then(res => res.json())
     .then(data => {
+        if(!data || data.length == 0){
+            console.log("No hay datos para procesos de scrap.");
+            if(chartScrapProcesos)
+                chartScrapProcesos.destroy(); //Limpia el gráfico si no hay datos
+            return;
+        }
         const chartProcesosLabel = data.map(item => item.nombreProceso);
         const chartProcesosValores = data.map(item => item.amountProceso);
         const ctx2 = document.getElementById('chartScrapPorProcesos').getContext('2d');
         
-        const chartScrapPorProcesos = new Chart(ctx2, {
-        type: 'bar',
-        data: {
-            labels: chartProcesosLabel /*['Cels Ensam Final', 'Rotatorias', 'Fabricacion', 'Dobladoras', 'Other Prod']*/,
-            datasets: [{
-                label: 'PARTE DE SCRAP POR PROCESOS',
-                data: chartProcesosValores,
-                backgroundColor: [
-                    // 'rgba(51, 14, 216, 0.5)',
-                    // 'rgba(161, 24, 54, 0.5)',
-                    // 'rgba(255, 238, 1, 0.5)',
-                    // 'rgba(28, 158, 152, 0.5)',
-                    // 'rgba(85, 102, 201, 0.78)'
-                    'rgba(135, 206, 235, 0.8)',
-                    'rgba(135, 206, 235, 0.8)',
-                    'rgba(135, 206, 235, 0.8)',
-                    'rgba(135, 206, 235, 0.8)',
-                    'rgba(135, 206, 235, 0.8)'
-                ],
-                borderColor: [
-                    'rgba(135, 206, 235, 1)',
-                    'rgba(135, 206, 235, 1)',
-                    'rgba(135, 206, 235, 1)',
-                    'rgba(135, 206, 235, 1)',
-                    'rgba(135, 206, 235, 1)'
-                ],
-                borderWidth: 1,
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                datalabels: {
-                formatter: (value) => '$' + value,
-                color: '#000',
-                font: {
-                    weight: 'bold'
-                }
-                }
-            }
-        },
-        plugins: [ChartDataLabels]
-    });
+        // Destruimos el gráfico anterior si existe
+        if (chartScrapProcesos)
+            chartScrapProcesos.destroy();
+
+        chartScrapProcesos = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: chartProcesosLabel /*['Cels Ensam Final', 'Rotatorias', 'Fabricacion', 'Dobladoras', 'Other Prod']*/,
+                datasets: [{
+                    label: 'PARTE DE SCRAP POR PROCESOS',
+                    data: chartProcesosValores,
+                    backgroundColor: [
+                        // 'rgba(51, 14, 216, 0.5)',
+                        // 'rgba(161, 24, 54, 0.5)',
+                        // 'rgba(255, 238, 1, 0.5)',
+                        // 'rgba(28, 158, 152, 0.5)',
+                        // 'rgba(85, 102, 201, 0.78)'
+                        'rgba(99, 109, 247, 0.8)',
+                        'rgba(99, 109, 247, 0.8)',
+                        'rgba(99, 109, 247, 0.8)',
+                        'rgba(99, 109, 247, 0.8)',
+                        'rgba(99, 109, 247, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(135, 206, 235, 1)',
+                        'rgba(135, 206, 235, 1)',
+                        'rgba(135, 206, 235, 1)',
+                        'rgba(135, 206, 235, 1)',
+                        'rgba(135, 206, 235, 1)'
+                    ],
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: false,
+                            boxWidth: 0,
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    datalabels: {
+                        formatter: (value) => '$' + value,
+                        // color: '#000',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                },
+            },
+            plugins: [ChartDataLabels]
+        });
     })
     .catch(err => {
         console.error('Error al obtener scrapProcesos', err);
     });
 
-// ------------ CHART DE TOP DE SCRAP POR DEFECTO TERCER DIV ------------
-const ctx3 = document.getElementById('chartTopScrapDefecto').getContext('2d');
-const chartTopScrapDefecto = new Chart(ctx3, {
-    type: 'bar',
-    data: {
-        labels: ['CONTAMINADO', 'QUEMADO', 'FUGA', 'GOLPEADO', 'ETC'],
-        datasets: [{
-            label: 'PARETO DE TOP POR DEFECTO',
-            data: [130244, 74075, 56092, 27963, 46],
-            backgroundColor: [
-                'rgba(233, 210, 108, 0.99)',
-                'rgba(84, 206, 94, 1)',
-                'rgba(100, 160, 228, 1)',
-                'rgba(174, 207, 97, 1)',
-                'rgba(236, 186, 91, 1)'
-            ],
-            borderColor: [
-                'rgba(233, 210, 108, 0.99)',
-                'rgba(84, 206, 94, 1)',
-                'rgba(100, 160, 228, 1)',
-                'rgba(174, 207, 97, 1)',
-                'rgba(236, 186, 91, 1)'
-            ],
-            borderWidth: 1,
-        }]
-    },
-    options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                datalabels: {
-                formatter: (value) => '$' + value,
-                color: '#000',
-                font: {
-                    weight: 'bold'
+    // ---------- CHART TOP DE SCRAP POR DEFECTO TERCER DIV ----------
+    fetch(`http://localhost:3000/api/consultaTopDefectos?fechaInicio=${fechaInicioDiario}&fechaActual=${fechaActualFormato}`)
+    .then(res => res.json())
+    .then(data => {
+        if(!data || data.length == 0){
+            console.log("No hay datos para Top Defectos.");
+            // Si el gráfico existe y no hay datos, destrúyelo
+            if(chartTopScrapDefecto) chartTopScrapDefecto.destroy();
+            return;
+        }
+
+        // Mapeamos los datos recibidos
+        const labelsDefectos = data.map(item => item.scrapName);
+        const valoresDefectos = data.map(item => item.totalCosto);
+
+        // Destruimos el gráfico anterior si existe
+        if (chartTopScrapDefecto) {
+            chartTopScrapDefecto.destroy();
+        }
+
+        const ctx3 = document.getElementById('chartTopScrapDefecto').getContext('2d');
+        chartTopScrapDefecto = new Chart(ctx3, { // Usamos la variable global
+            type: 'bar',
+            data: {
+                labels: labelsDefectos, // <-- DATO DINÁMICO
+                datasets: [{
+                    // `label` debe ser una cadena; la configuración de fuente va en las opciones/leyenda
+                    label: 'PARETO DE TOP POR DEFECTO',
+                    data: valoresDefectos, // <-- DATO DINÁMICO
+                    backgroundColor: [
+                        'rgba(206, 154, 77, 0.99)',
+                        'rgba(84, 206, 94, 1)',
+                        'rgba(100, 160, 228, 1)',
+                        'rgba(3, 179, 12, 1)',
+                        'rgba(236, 186, 91, 1)'
+                    ],
+                    borderColor: [
+                        'rgba(233, 210, 108, 0.99)',
+                        'rgba(84, 206, 94, 1)',
+                        'rgba(100, 160, 228, 1)',
+                        'rgba(174, 207, 97, 1)',
+                        'rgba(236, 186, 91, 1)'
+                    ],
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                // indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    // Añadimos configuración de leyenda para ajustar la fuente del label si es necesario
+                    legend: {
+                        display: true,
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: true,
+                            boxWidth: 0,
+                            font: { 
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    datalabels: {
+                        formatter: (value) => '$' + value,
+                        // El color ya se maneja con la función de modo oscuro
+                        // color: '#000', 
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                },
+                scales: {
+                    y:{
+                        ticks: {
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
                 }
-                }
-            }
-        },
-        plugins: [ChartDataLabels] 
-});
+            },
+            plugins: [ChartDataLabels] 
+        });
 
-// ------------ CHART DE ENERGY CUARTO DIV (DINÁMICO) ------------
-async function createEnergyChart() {
-    try {
-        const response = await fetch('http://localhost:3000/api/consultaEnergy?limit=30'); // Pide los últimos 30 registros
-        if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
+    })
+    .catch(err => {
+        console.error('Error al obtener Top 5 Defectos', err);
+    });
 
-        // Ordenar los datos por fecha, del más antiguo al más reciente
-        const sortedData = data.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    // ---------- CHART DE ENERGIA CUARTO DIV ----------
+    fetch(`http://localhost:3000/api/consultaEnergyDashboard?fechaInicio=${fechaInicioFormato}&fechaActual=${fechaActualFormato}`)
+    .then(res => res.json())
+    .then(data => {
+        if (!data || data.length === 0) {
+            console.log("No hay datos para el gráfico de Energía.");
+            if (chartEnergy) chartEnergy.destroy();
+            return;
+        }
 
-        const labels = sortedData.map(item => item.fecha.split('T')[0]);
-        
-        // Calcular los ratios kWh/unidad, si la producción es 0, el valor será 0 para la gráfica
-        const electricityData = sortedData.map(item => 
-            item.electricidad_produccion > 0 ? parseFloat((item.electricidad_consumo / item.electricidad_produccion).toFixed(4)) : 0
+        // Procesar los datos agregados
+        const labels = data.map(item => {
+            const fecha = new Date(item.dia);
+            // Usamos UTC para evitar problemas de zona horaria al mostrar la fecha
+            return `${fecha.getUTCDate().toString().padStart(2, '0')}/${(fecha.getUTCMonth() + 1).toString().padStart(2, '0')}`;
+        });
+
+        const electricityData = data.map(item => 
+            item.total_electricidad_produccion > 0 ? parseFloat((item.total_electricidad_consumo / item.total_electricidad_produccion).toFixed(4)) : 0
         );
 
-        // Calcular los ratios m³/unidad
-        const heliumData = sortedData.map(item => 
-            item.helio_produccion > 0 ? parseFloat((item.helio_consumo / item.helio_produccion).toFixed(4)) : 0
+        const heliumData = data.map(item => 
+            item.total_helio_produccion > 0 ? parseFloat((item.total_helio_consumo / item.total_helio_produccion).toFixed(4)) : 0
         );
+
+        if (chartEnergy) {
+            chartEnergy.destroy();
+        }
 
         const ctx4 = document.getElementById('chartEnergy').getContext('2d');
-        new Chart(ctx4, {
+        chartEnergy = new Chart(ctx4, { // Usamos la variable global
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
                     label: 'ELECTRICIDAD (kWh/Unidad)',
                     data: electricityData,
-                    borderColor: 'rgb(54, 162, 235)', // Color azul
+                    borderColor: 'rgb(54, 162, 235)',
                     backgroundColor: 'rgba(54, 162, 235, 0.5)',
                     fill: false,
                     tension: 0.1,
@@ -366,14 +445,14 @@ async function createEnergyChart() {
                 }, {
                     label: 'HELIO (m³/Unidad)',
                     data: heliumData,
-                    borderColor: 'rgb(255, 159, 64)', // Color naranja
+                    borderColor: 'rgb(255, 159, 64)',
                     backgroundColor: 'rgba(255, 159, 64, 0.5)',
                     fill: false,
                     tension: 0.1,
                     pointRadius: 3
                 }]
             },
-            options: {
+            options: { // Opciones originales de tu gráfico
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
@@ -406,17 +485,12 @@ async function createEnergyChart() {
                 }
             }
         });
-    } catch (error) {
-        console.error("Error al crear la gráfica de energía:", error);
-        // Opcional: Mostrar un mensaje de error en el canvas si falla la carga
-        const ctx4 = document.getElementById('chartEnergy').getContext('2d');
-        ctx4.font = '16px Arial';
-        ctx4.fillStyle = 'red';
-        ctx4.textAlign = 'center';
-        ctx4.fillText('No se pudieron cargar los datos.', 150, 100);
-    }
+    })
+    .catch(err => {
+        console.error("Error al crear la gráfica de energía:", err);
+    });
+
 }
-createEnergyChart();
 
 // ------------ CHART DE BTS QUINTO DIV ------------
 const ctx6 = document.getElementById('chartLowPerformance').getContext('2d');
@@ -998,3 +1072,5 @@ const chartTopOEE = new Chart(ctx16, {
         },
         plugins: [ChartDataLabels]  
 });
+
+// --------------- FUNCIONES AUXILIARES ---------------

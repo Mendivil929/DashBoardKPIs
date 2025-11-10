@@ -126,9 +126,9 @@
                         </a>
                     </div>
                     <div>
-                        <a href="">
+                        <a href="config.html">
                             <!-- <img src="images/settings-icon.png" alt=""> -->
-                             <i class='bx  bx-cog'  ></i> 
+                            <i class='bx  bx-cog'  ></i> 
                             <p>Configuraciones</p>
                             <span>></span>
                         </a>
@@ -139,8 +139,10 @@
     </nav>
 
     <section class="home">
+
+        <!-- Scrap Indicator Section -->
         <div class="contenedorIndicadoresScrap">
-            <div class="form-insert insertion">
+            <div class="form-insert insertion indicadorScrap">
                 <h3>Insertar los costos de material y scrap</h3>
                 <form id="scrapIndicatorForm">
                     <input type="hidden" id="editIndicatorId">  <!-- Campo oculto auxiliar para el evento de modificacion -->
@@ -160,7 +162,7 @@
                         <label class="signo">$</label>
                     </div>
 
-                    <button type="submit" id="buttonIndicador">Guardar</button>
+                    <button type="submit" id="buttonIndicador" class="buttonIndicador">Guardar</button>
                 </form>
             </div>
 
@@ -182,8 +184,9 @@
             </div>
         </div>
 
+        <!-- Scrap Proceso Section -->
         <div class="contenedorScrapProceso">
-            <div class="form-insert insertion">
+            <div class="form-insert insertion scrapProceso">
                 <h3>Insertar nuevo proceso de scrap</h3>
                 <form id="scrapForm">
                     <label>Fecha:</label>
@@ -225,6 +228,46 @@
             </div>
         </div>
 
+        <!-- Scrap Defecto Section -->
+        <div class="contenedorScrapDefecto">
+            <div class="form-insert insertion scrapDefecto">
+                <h3>Insertar nuevo defecto de scrap</h3>
+                <form id="scrapDefectoForm">
+                    <label>Fecha:</label>
+                    <input type="datetime-local" id="fecha-defecto" name="fecha" class="control" required />
+
+                    <label>Nombre del Defecto:</label>
+                    <select id="defecto-nombre" class="control selector" name="nombre">
+                        <option value="">Cargando defectos...</option>
+                    </select>
+
+                    <label for="defecto-costo">Costo:</label>
+                    <div class="costDefecto">
+                        <input type="number" step="0.01" id="defecto-costo" name="costo" class="control" required />
+                        <label class="signo">$</label>
+                    </div>
+                    <button type="submit" id="buttonDefecto">Guardar</button>
+                </form>
+            </div>
+
+            <div class="form-insert register">
+                <h3>Defectos registrados</h3>
+                <table id="scrapDefectoTable">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Código</th>
+                        <th>Nombre Defecto</th>
+                        <th>Costo</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
     </section>
 
     <!-- MODAL PARA LAS MODIFICACIONES DE INDICADORES-->
@@ -257,31 +300,57 @@
 
     <!-- MODAL PARA LAS MODIFICACIONES DE PROCESOS -->
     <div id="editProcessModal" class="modal-overlay">
-    <div class="modal-content">
-        <span id="closeProcessModalBtn" class="close-btn">&times;</span>
-        <h3>Modificar Registro de Proceso</h3>
-        <form id="editProcessForm">
-            <input type="hidden" id="edit-process-id-hidden">
+        <div class="modal-content">
+            <span id="closeProcessModalBtn" class="close-btn">&times;</span>
+            <h3>Modificar Registro de Proceso</h3>
+            <form id="editProcessForm">
+                <input type="hidden" id="edit-process-id-hidden">
 
-            <label for="edit-fecha-proceso">Fecha:</label>
-            <input type="datetime-local" id="edit-fecha-proceso" class="control" required />
+                <label for="edit-fecha-proceso">Fecha:</label>
+                <input type="datetime-local" id="edit-fecha-proceso" class="control" required />
 
-            <label for="edit-proceso-nombre">Nombre del Proceso:</label>
-            <select id="edit-proceso-nombre" class="control">
-                <option value="Cels Ensam Final">Cels Ensam Final</option>
-                <option value="Rotatorias">Rotatorias</option>
-                <option value="Fabricacion">Fabricacion</option>
-                <option value="Dobladoras">Dobladoras</option>
-                <option value="Other Prod">Other Prod</option>
-            </select>
+                <label for="edit-proceso-nombre">Nombre del Proceso:</label>
+                <select id="edit-proceso-nombre" class="control">
+                    <option value="Cels Ensam Final">Cels Ensam Final</option>
+                    <option value="Rotatorias">Rotatorias</option>
+                    <option value="Fabricacion">Fabricacion</option>
+                    <option value="Dobladoras">Dobladoras</option>
+                    <option value="Other Prod">Other Prod</option>
+                </select>
 
-            <label for="edit-proceso-cantidad">Cantidad:</label>
-            <input type="number" step="0.01" id="edit-proceso-cantidad" class="control" required />
+                <label for="edit-proceso-cantidad">Cantidad:</label>
+                <input type="number" step="0.01" id="edit-proceso-cantidad" class="control" required />
 
-            <button type="submit">Actualizar Proceso</button>
-        </form>
+                <button type="submit">Actualizar Proceso</button>
+            </form>
+        </div>
     </div>
-</div>
+
+    <!-- MODAL PARA LAS MODIFICACIONES DE DEFECTOS -->
+    <div id="editDefectoModal" class="modal-overlay">
+        <div class="modal-content">
+            <span id="closeDefectoModalBtn" class="close-btn">&times;</span>
+            <h3>Modificar Registro de Defecto</h3>
+            <form id="editDefectoForm">
+                <input type="hidden" id="edit-defecto-id-hidden">
+
+                <label for="edit-fecha-defecto">Fecha:</label>
+                <input type="datetime-local" id="edit-fecha-defecto" class="control" required />
+
+                <label for="edit-defecto-nombre">Nombre del Defecto:</label>
+                <select id="edit-defecto-nombre" class="control" required>
+                </select>
+
+                <label for="edit-defecto-costo">Costo:</label>
+                <div class="costDefecto">
+                    <input type="number" step="0.01" id="edit-defecto-costo" class="control" required />
+                    <label class="signo">$</label>
+                </div>
+
+                <button type="submit">Actualizar Defecto</button>
+            </form>
+        </div>
+    </div>
 
 
     <!-- ---------------------- SCRIPTS ---------------------- -->

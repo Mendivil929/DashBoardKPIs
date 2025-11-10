@@ -12,6 +12,7 @@
     --body-color: #f5f5f5;
     --sidebar-color: #FFF;
     --topbar-color: #f5f5f5;
+    --dashboard-color: #f5f5f5;
     --primary-color: #3625ec;
     --primary-color-light: #F6F5FF;
     --toggle-color: #DDDD;
@@ -42,6 +43,7 @@ body.dark {
     --body-color: #18191a;
     --sidebar-color: #242526;
     --topbar-color: #18191a;
+    --dashboard-color: #242526;
     --primary-color: #3A3B3C;
     --primary-color-light: #3A3B3C;
     --toggle-color: #FFF;
@@ -498,7 +500,7 @@ body.dark .menu-options div a:hover span {
 
 .chartsBox .chart {
     position: relative;
-    background: var(--body-color);
+    background: var(--dashboard-color);
     width: 100%;
     border-radius: 0px;
     border: solid black 1px;
@@ -693,3 +695,196 @@ canvas {
     background: var(--sidebar-color);
 }
 
+/* ------------------ APARTADO DE ESTILOS PARA MODALES DE CONSULTA DETALLADA ------------------ */
+
+/* ------------------- Modal Cost Scrap (Indicador e historial) -------------------  */
+
+/* Estilos para el botón de cerrar */
+#closeModalScrapCost:hover {
+    color: red;
+}
+
+#closeModalScrapCost {
+    cursor: pointer;
+    font-size: x-large;
+}
+
+/* #modalScrapCost .sc-chart-grande {
+    width: 100%;
+    height: 350px;
+    margin-bottom: 20px;
+} */
+
+/* Contenedor para ambos gráficos en el modal */
+#modalScrapCost .sc-charts-container {
+    display: flex;
+    flex-direction: column; /* Apilados verticalmente */
+    align-items: center; /* Alinear verticalmente */
+    justify-content: space-around; /* Espacio entre ellos */
+    width: 100%;
+    margin-bottom: 20px;
+    gap: 20px; /* Espacio entre los dos gráficos */
+    border-bottom: 1px solid #eee; /* Línea separadora */
+    padding-bottom: 15px;
+}
+
+/* [NUEVO] Estilo para el gráfico indicador (barra) */
+#modalScrapCost .sc-chart-indicador {
+    width: 40%; /* 40% del espacio para el indicador */
+    height: 150px; /* Altura fija */
+}
+
+/* [NUEVO] Estilo para el gráfico de historial (línea) */
+#modalScrapCost .sc-chart-historial {
+    width: 60%; /* 60% del espacio para la línea */
+    height: 120px; /* Más altura para el detalle */
+}
+
+#modalScrapCost .sc-tabla-detalles {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+
+#modalScrapCost .sc-tabla-detalles table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#modalScrapCost .sc-tabla-detalles th, 
+#modalScrapCost .sc-tabla-detalles td {
+    border: 1px solid #e0e0e0;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+#modalScrapCost .sc-tabla-detalles th {
+    background-color: #007bff;
+    color: white;
+    position: sticky;
+    top: 0;
+}
+
+/* ------------------- Modal Scrap Proceso -------------------  */
+
+#closeModalScrapProceso {
+  cursor: pointer;
+  font-size: x-large;
+}
+#closeModalScrapProceso:hover {
+  color: red;
+}
+
+#modalScrapProceso .sp-chart-grande {
+    width: 100%;
+    height: 350px;
+    margin-bottom: 20px;
+}
+
+#modalScrapProceso .sp-tabla-detalles {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+
+#modalScrapProceso .sp-tabla-detalles table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#modalScrapProceso .sp-tabla-detalles th, 
+#modalScrapProceso .sp-tabla-detalles td {
+    border: 1px solid #e0e0e0;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+#modalScrapProceso .sp-tabla-detalles th {
+    background-color: #007bff;
+    color: white;
+    position: sticky;
+    top: 0;
+}
+
+/* ------------------- Modal Top Defectos -------------------  */
+
+#closeModalTopDefectos {
+  cursor: pointer;
+  font-size: x-large;
+}
+#closeModalTopDefectos:hover {
+  color: red;
+}
+
+#modalTopDefectos .sp-chart-grande {
+    width: 100%;
+    height: 350px;
+    margin-bottom: 20px;
+}
+
+#modalTopDefectos .sp-tabla-detalles {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+
+#modalTopDefectos .sp-tabla-detalles table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#modalTopDefectos .sp-tabla-detalles th, 
+#modalTopDefectos .sp-tabla-detalles td {
+    border: 1px solid #e0e0e0;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+#modalTopDefectos .sp-tabla-detalles th {
+    background-color: #007bff;
+    color: white;
+    position: sticky;
+    top: 0;
+}
+
+/* ------------------- Modal Eficiencia Energética ------------------- */
+
+#closeModalEnergy {
+  cursor: pointer;
+  font-size: x-large;
+}
+#closeModalEnergy:hover {
+  color: red;
+}
+
+/* Usamos las clases sp-chart-grande y sp-tabla-detalles que ya existen,
+   pero si quieres estilos únicos, puedes añadirlos aquí.
+   Por ahora, solo definimos los estilos de la tabla interna. */
+   
+#modalEnergy .sp-chart-grande {
+    width: 100%;
+    height: 350px; /* <-- Esta es la línea mágica que faltaba */
+    margin-bottom: 20px;
+}
+
+#modalEnergy .sp-tabla-detalles table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#modalEnergy .sp-tabla-detalles th, 
+#modalEnergy .sp-tabla-detalles td {
+    border: 1px solid #e0e0e0;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+#modalEnergy .sp-tabla-detalles th {
+    background-color: #007bff;
+    color: white;
+    position: sticky;
+    top: 0;
+}

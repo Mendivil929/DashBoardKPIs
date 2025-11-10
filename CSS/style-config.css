@@ -1,0 +1,213 @@
+/* style-config.css */
+
+/* Título principal de la página de administración */
+.admin-title {
+    margin: 20px 30px 0;
+    color: var(--text-color); /* Respeta el modo oscuro/claro */
+    font-size: 1.5rem; /* Tamaño del título */
+}
+
+/* Contenedor principal de la grilla (Formulario + Tabla) */
+.contenedorDefectoAdmin {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 3fr; /* Formulario 1/3, Tabla 2/3 */
+  grid-template-rows: 1fr;
+  margin: 30px;
+  gap: 30px; /* Espacio entre el formulario y la tabla */
+}
+
+/* ======================================================== */
+/* CORRECCIÓN DE MODO OSCURO */
+/* ======================================================== */
+
+.form-insert,
+.modal-content { /* [MODIFICADO] Aplicamos el fondo al modal también */
+  position: relative;
+  background: var(--sidebar-color);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  transition: background var(--tran-05); /* Transición suave */
+}
+
+/* Ajuste de tamaño para la caja del formulario */
+.contenedorDefectoAdmin .insertion{
+  max-width: 450px;
+  max-height: 420px;
+}
+
+/* [MODIFICADO] Aplicamos al H3 del modal */
+.form-insert h3,
+.modal-content h3 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--text-color); /* Usa variable */
+}
+
+/* [MODIFICADO] Aplicamos a los Labels del modal */
+.form-insert label,
+.modal-content label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: var(--text-color); /* Usa variable */
+}
+
+/* [MODIFICADO] Aplicamos a los Inputs del modal */
+.form-insert .control,
+.modal-content .control {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--toggle-color); /* Usa variable */
+  border-radius: 4px;
+  background: var(--body-color); /* Color del fondo de la página */
+  color: var(--text-color); /* Color del texto */
+  transition: background var(--tran-05), color var(--tran-05);
+}
+
+/* [MODIFICADO] Aplicamos a los Botones del modal */
+.form-insert button,
+.modal-content button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #007bff;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.form-insert button:hover,
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+
+/* Botón de cancelar edición (oculto por defecto) */
+.button-cancel {
+  width: 100%;
+  margin-top: 10px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #6c757d; /* Color gris */
+  color: white;
+}
+.button-cancel:hover {
+  background-color: #5a6268;
+}
+
+/* Estilos para la tabla de la derecha */
+.form-insert table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.form-insert th, 
+.form-insert td {
+  border: 1px solid var(--toggle-color); /* Usa variable */
+  padding: 0.5rem;
+  text-align: left;
+  color: var(--text-color); /* Usa variable */
+}
+
+.form-insert th {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Contenedor para los botones (Modificar/Eliminar) DENTRO de la tabla */
+.contenedorBotones {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Estilo de los botones (Modificar/Eliminar) */
+.contenedorBotones button {
+    width: auto; /* Anula el width: 100% general */
+    padding: 5px 10px;
+    font-size: 0.9rem;
+}
+
+/* Botón de eliminar (rojo) */
+.form-insert td .contenedorBotones .delete-btn {
+    background-color: #dc3545;
+}
+.form-insert td .contenedorBotones .delete-btn:hover {
+    background-color: #c82333;
+}
+/* ======================================================== */
+
+/* Responsividad (igual que los otros) */
+@media (max-width: 991px){
+  .contenedorDefectoAdmin{
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto; /* Uno encima del otro */
+    margin: 30px;
+  }
+}
+
+/* ======================================================== */
+/* ESTILOS PARA LA VENTANA MODAL DE EDICIÓN */
+/* ======================================================== */
+
+/* El fondo oscuro semi-transparente */
+.modal-overlay {
+  display: none; /* Oculto por defecto */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+/* El contenido de la ventana (el cuadro blanco/oscuro) */
+.modal-content {
+  /* [MODIFICADO] Ya no necesitamos la mayoría de estas reglas,
+     porque las definimos arriba junto a .form-insert */
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 450px; /* Ancho del modal */
+  position: relative;
+  animation: zoomIn 0.3s ease-out;
+}
+
+/* El botón de cerrar (X) */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #888; /* Color gris */
+  cursor: pointer;
+  transition: color 0.2s;
+}
+/* [MODIFICADO] Usamos --text-color para el hover en modo oscuro */
+.close-btn:hover {
+  color: var(--text-color);
+}
+
+/* Animación de entrada */
+@keyframes zoomIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

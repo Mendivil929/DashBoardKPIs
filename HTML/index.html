@@ -130,7 +130,7 @@
                         </a>
                     </div>
                     <div>
-                        <a href="">
+                        <a href="config.html">
                             <!-- <img src="images/settings-icon.png" alt=""> -->
                              <i class='bx  bx-cog'  ></i> 
                             <p>Configuraciones</p>
@@ -227,6 +227,72 @@
             <div class="modal-content">
                 <span id="closeDashboardBtn">&times;</span>
                 <div id="dashboardClone"></div>
+            </div>
+        </div>
+
+        <!-- ---------------- SECCION DE MODALES ESPECIFICOS --------------- -->
+
+        <!-- Modal Costo de Scrap (Para indicador e historial)-->
+        <div id="modalScrapCost" class="modal">
+            <div class="modal-content">
+                <span id="closeModalScrapCost" class="closeBtn">&times;</span>
+                <h2>Detalle de Costo de Scrap</h2>
+                
+                <div class="sc-charts-container">
+                    <div class="sc-chart-indicador">
+                        <canvas id="chartScrapCostModal_Indicador"></canvas>
+                    </div>
+                    <div class="sc-chart-historial">
+                        <canvas id="chartScrapCostModal_Historial"></canvas>
+                    </div>
+                </div>
+                
+                <div id="tablaScrapCostDetalles" class="sc-tabla-detalles">
+                    </div>
+            </div>
+        </div>
+
+        <!-- Modal Scrap por Proceso -->
+        <div id="modalScrapProceso" class="modal">
+            <div class="modal-content">
+                <span id="closeModalScrapProceso" class="closeBtn">&times;</span>
+                <h2>Detalle de Scrap por Proceso</h2>
+                
+                <div class="sp-chart-grande">
+                    <canvas id="chartScrapProcesoModal"></canvas>
+                </div>
+                
+                <div id="tablaScrapProcesoDetalles" class="sp-tabla-detalles"></div>
+            </div>
+        </div>
+
+        <!-- Modal Top Defectos por Scrap -->
+        <div id="modalTopDefectos" class="modal">
+            <div class="modal-content">
+                <span id="closeModalTopDefectos" class="closeBtn">&times;</span>
+                <h2>Detalle de Top Defectos por Scrap</h2>
+                
+                <div class="sp-chart-grande">
+                    <canvas id="chartTopDefectosModal"></canvas>
+                </div>
+                
+                <div id="tablaTopDefectosDetalles" class="sp-tabla-detalles">
+                    </div>
+            </div>
+        </div>
+
+        <!-- Modal Eficiencia Energética -->
+        <div id="modalEnergy" class="modal">
+            <div class="modal-content">
+                <span id="closeModalEnergy" class="closeBtn">&times;</span>
+                <h2>Detalle de Eficiencia Energética</h2>
+                
+                <div class="sp-chart-grande">
+                    <canvas id="chartEnergyModal"></canvas>
+                </div>
+                
+                <div id="tablaEnergyDetalles" class="sp-tabla-detalles">
+                    </div>
             </div>
         </div>
 

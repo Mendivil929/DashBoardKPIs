@@ -1,8 +1,4 @@
-/* body {
-      font-family: Arial, sans-serif;
-      margin: 2rem;
-      background-color: #f5f5f5;
-    } */
+/* style-scrap.css (CORREGIDO CON MODO OSCURO) */
 
 .topbar-menu .date-box {
   position: relative;
@@ -10,33 +6,62 @@
   align-items: center;
 }
 
-.date-box input { /* Cancelamos el margin-bottom aplicado a los input con class=control en style-index.css */
+.date-box input { 
   margin-bottom: 0;
 }
 
-.contenedorScrapProceso{
+.contenedorScrapProceso,
+.contenedorIndicadoresScrap,
+.contenedorScrapDefecto {
   position: relative;
   display: grid;
   grid-template-columns: 1fr 3fr;
   grid-template-rows: 1fr;
   margin: 30px;
+  gap: 30px; /* [AÑADIDO] Espacio entre las cajas */
 }
 
-.contenedorIndicadoresScrap{
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-  grid-template-rows: 1fr;
-  margin: 30px;
-}
+/* ======================================================== */
+/* CORRECCIÓN DE MODO OSCURO (Aplicado a .form-insert) */
+/* ======================================================== */
 
 .form-insert {
   position: relative;
-  background: white;
+  background: var(--sidebar-color); /* [CORREGIDO] Usa variable */
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  transition: background var(--tran-05); /* [NUEVO] Transición suave */
 }
+
+.form-insert h3 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--text-color); /* [NUEVO] Usa variable */
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: var(--text-color); /* [NUEVO] Usa variable */
+}
+
+.control {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--toggle-color); /* [CORREGIDO] Usa variable */
+  border-radius: 4px;
+  background: var(--body-color); /* [NUEVO] Usa variable */
+  color: var(--text-color); /* [NUEVO] Usa variable */
+  transition: background var(--tran-05), color var(--tran-05);
+}
+
+/* ======================================================== */
+/* FIN DE LA CORRECCIÓN */
+/* ======================================================== */
+
 
 .insertion{
   max-width: 400px;
@@ -53,48 +78,31 @@
 }
 
 @media (max-width: 991px){
-  .contenedorScrapProceso{
+  .contenedorScrapProceso,
+  .contenedorIndicadoresScrap,
+  .contenedorScrapDefecto { /* [MODIFICADO] Aplicado a todos */
     grid-template-columns: 1fr;
-    grid-template-rows: 2fr;
+    grid-template-rows: auto auto; /* [MODIFICADO] Altura automática */
     margin: 30px;
   }
 }
 
-.form-insert h3 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-}
-
-.control {
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.costEndItem, .costScrap, .costProceso {
-  position: relative; /* Necesario para posicionar el icono */
+.costEndItem, .costScrap, .costProceso, .costDefecto {
+  position: relative;
   display: inline-block;
 }
 
-.costEndItem input, .costScrap input, .costProceso input {
-  padding-left: 30px; /* Deja espacio para el ícono */
+.costEndItem input, .costScrap input, .costProceso input, .costDefecto input {
+  padding-left: 30px;
 }
 
 .signo {
   position: absolute;
-  left: 10px; /* Posición horizontal del ícono */
+  left: 10px;
   top: 50%;
-  transform: translateY(-80%); /* Centra verticalmente el ícono */
-  color: #aaa; /* Color del ícono */
-  font-size: 1.1em; /* Tamaño del ícono */
+  transform: translateY(-80%);
+  color: #aaa;
+  font-size: 1.1em;
 }
 
 button {
@@ -112,14 +120,19 @@ button:hover {
   background-color: #0056b3;
 }
 
+.buttonIndicador.deshabilitado {
+  background-color: rgba(172, 207, 236, 1);
+  cursor: default;
+}
+
 .contenedorBotones {
-  display: flex; /* Activa el modo Flexbox */
-  justify-content: center; /* Opcional: Centra los botones en la celda */
-  gap: 8px; /* Opcional: Añade un espacio de 8px entre los botones */
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 }
 
 .contenedorBotones button {
-  width: auto; /* Anula el width: 100% y permite que el botón ocupe su ancho natural */
+  width: auto;
 }
 
 table {
@@ -129,9 +142,10 @@ table {
 }
 
 th, td {
-  border: 1px solid #ccc;
+  border: 1px solid var(--toggle-color); /* [CORREGIDO] Usa variable */
   padding: 0.5rem;
   text-align: left;
+  color: var(--text-color); /* [NUEVO] Usa variable */
 }
 
 th {
@@ -139,35 +153,44 @@ th {
   color: white;
 }
 
-/* ================== ESTILOS PARA LA VENTANA MODAL DE EDICIÓN / MODIFICACION ================== */
+/* ================== ESTILOS PARA LA VENTANA MODAL (Corregidos) ================== */
 
-/* El fondo oscuro semi-transparente */
 .modal-overlay {
-  display: none; /* Oculto por defecto */
-  position: fixed; /* Se queda fijo en la pantalla */
+  display: none;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* Fondo negro con 60% de opacidad */
-  z-index: 1000; /* Asegura que esté por encima de todo */
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
   justify-content: center;
   align-items: center;
 }
 
-/* El contenido de la ventana (el cuadro blanco) */
 .modal-content {
-  background: var(--sidebar-color, white); /* Usa tus variables de color */
+  background: var(--sidebar-color); /* [CORREGIDO] Ya usaba la variable */
   padding: 25px;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   width: 90%;
-  max-width: 450px; /* Ancho máximo */
+  max-width: 450px;
   position: relative;
-  animation: zoomIn 0.3s ease-out; /* Animación para aparecer */
+  animation: zoomIn 0.3s ease-out;
+  transition: background var(--tran-05); /* [NUEVO] Transición suave */
 }
 
-/* El botón de cerrar (X) */
+/* Aplicamos estilos de modo oscuro a elementos DENTRO del modal */
+.modal-content h3,
+.modal-content label {
+    color: var(--text-color);
+}
+.modal-content .control {
+    background: var(--body-color);
+    color: var(--text-color);
+    border: 1px solid var(--toggle-color);
+}
+
 .close-btn {
   position: absolute;
   top: 10px;
@@ -180,10 +203,9 @@ th {
 }
 
 .close-btn:hover {
-  color: #333;
+  color: var(--text-color); /* [CORREGIDO] Usa variable */
 }
 
-/* Animación de entrada */
 @keyframes zoomIn {
   from {
     transform: scale(0.8);
